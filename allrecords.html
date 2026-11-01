@@ -1,0 +1,597 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Records</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 24px;
+            background-color: #F5FAFC;
+            font-family: Arial, sans-serif;
+            color: #355B66;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 24px;
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(53, 91, 102, 0.12);
+            background-color: #D9F0F2;
+            color: #355B66;
+        }
+
+        .record-form h2,
+        .record-table h2,
+        .record-graph h2 {
+            margin: 4px 0 16px;
+            padding-bottom: 10px;
+            color: #355B66;
+            font-size: 21px;
+            border-bottom: 2px solid #D9F0F2;
+        }
+
+        .records-layout {
+            display: grid;
+            grid-template-columns: 300px minmax(0, 1fr);
+            grid-template-areas:
+                "form table"
+                "form graph";
+            gap: 20px;
+            align-items: start;
+        }
+
+        .record-form {
+            grid-area: form;
+            padding: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #D9E9EC;
+            border-radius: 15px;
+            box-shadow: 0 5px 14px rgba(53, 91, 102, 0.08);
+        }
+
+        .record-table {
+            grid-area: table;
+            min-width: 0;
+            overflow-x: auto;
+        }
+        .record-form label{
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: bold;
+
+    color: #355B66;
+
+    font-size: 15px;
+
+
+        }
+    #employeename,
+#department,
+#task,
+#recorddate,
+#completion,
+#taskstatus {
+
+    display: block;
+
+    width: 90%;
+
+    padding: 13px;
+
+    margin-bottom: 18px;
+
+    border: 1px solid #C7E3E8;
+
+    border-radius: 9px;
+
+    background-color: #FFFFFF;
+
+    color: #355B66;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.3s;
+
+}
+
+
+#employeename:focus,
+#department:focus,
+#task:focus,
+#recorddate:focus,
+#completion:focus,
+#taskstatus:focus {
+     border-color: #5EABB6;
+
+    box-shadow: 0 0 0 3px rgba(120, 191, 200, 0.18);
+}
+
+  
+input::placeholder {
+
+    color: #8AA7AD;
+
+}
+
+
+
+        .record-graph {
+            grid-area: graph;
+            min-width: 0;
+            padding: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #D9E9EC;
+            border-radius: 15px;
+            box-shadow: 0 5px 14px rgba(53, 91, 102, 0.08);
+        }
+
+        #taskchart {
+            width: 100%;
+            max-height: 320px;
+        }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 320px;
+}
+
+        #addrecordbtn {
+            width: 100%;
+            margin-top: 3px;
+            padding: 10px 16px;
+            background-color: #78BFC8;
+            color: #173D45;
+            border: none;
+            cursor: pointer;
+            border-radius: 11px;
+        }
+
+        #addrecordbtn:hover {
+            background-color: #5EABB6;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 12px;
+            background-color: #D9F0F2;
+            color: #355B66;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #E2EEF0;
+            background-color: #FFFFFF;
+        }
+
+        tbody tr:hover td {
+            background-color: #F0F8F9;
+        }
+
+        .delete-btn {
+            background-color: #78BFC8;
+            color: #173D45;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 11px;
+        }
+
+        .delete-btn:hover {
+            background-color: #5EABB6;
+        }
+
+       
+        
+/* width iss say kam hodi to layout different dikhai day abb walay say*/
+        @media (max-width: 750px) {
+            .records-layout {
+                grid-template-columns: 1fr;/*1 column mai hi mill jul ker raho*/
+                grid-template-areas:
+                    "form"
+                    "table"
+                    "graph";
+            }
+
+            .record-form {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section id="allrecords">
+        <h1>All Records</h1>
+
+        <div class="records-layout">
+
+            <section class="record-form">
+                <h2>Add Employee Record</h2>
+
+                <form id="recordform">
+                    <label for="employeename">EmployeeName:</label>
+                    <input
+                        type="text"
+                        id="employeename"
+                        placeholder="Employee Name" >
+
+                    <label for="department">Department:</label>
+                    <input
+                        type="text"
+                        id="department"
+                        placeholder="Department">
+                
+                    <label for="task">Task:</label>
+                    <input
+                        type="text"
+                        id="task"
+                        placeholder="Enter Task"   >
+
+                    <label for="recorddate">Select date:</label>
+
+                    <input type="date" id="recorddate">
+                    <label for="taskstatus">Task Status:</label>
+
+                    <select id="taskstatus">
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <label for="completion">Completion(%):</label>
+
+                    <input
+                        type="number"
+                        id="completion"
+                        placeholder="Completion %" min="10"
+                        max="100" step="10" >
+
+                    <button type="button" id="addrecordbtn">
+                        Add Record
+                    </button>
+                </form>
+            </section>
+
+           <section class="record-graph">
+    <h2>Task Status Graph</h2>
+
+    <label for="weekpicker">Select Week:</label>
+
+    <input type="week" id="weekpicker">
+
+    <div class="chart-container">
+        <canvas id="taskchart"></canvas>
+    </div>
+</section>
+    
+            <section class="record-table">
+                <h2>Employee Records</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Department</th>
+                            <th>Task</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Completion</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="recordtablebody"></tbody>
+                </table>
+            </section>
+
+      
+        </div>
+    </section>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const empname = document.getElementById("employeename");
+            const departinput = document.getElementById("department");
+            const taskinput = document.getElementById("task");
+            const daterecordinput = document.getElementById("recorddate");
+            const taskstatusinput = document.getElementById("taskstatus");
+            const completioninput = document.getElementById("completion");
+            const addrecordbutton = document.getElementById("addrecordbtn");
+            const tablebody = document.getElementById("recordtablebody");
+            const chartcanvas = document.getElementById("taskchart");
+            const weekpicker = document.getElementById("weekpicker")
+
+            function getTodayDate(){
+                const today = new Date();
+                const month = String(today.getMonth() +1).padStart(2,"0");
+                const year = today.getFullYear();
+                const day=String(today.getDate()).padStart(2,"0");
+                return`${year}-${month}-${day}`;
+            }
+
+            function getWeekValue(date) {
+
+                const d = new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate()
+                );
+
+                const day = d.getDay() || 7;
+
+                d.setDate(d.getDate() + 4 - day);
+
+                const year = d.getFullYear();
+
+                const yearStart = new Date(year, 0, 1);
+
+                const weekNumber = Math.ceil(
+                    (
+                        (
+                            d - yearStart
+                        ) / 86400000 + 1
+                    ) / 7
+                );
+
+                return `${year}-W${String(weekNumber).padStart(2, "0")}`;
+
+            }
+
+            function getMondayFromWeek(weekValue) {
+
+                const parts = weekValue.split("-W");
+
+                const year = Number(parts[0]);
+
+                const week = Number(parts[1]);
+
+                const januaryFourth = new Date(year, 0, 4);
+
+                const day = januaryFourth.getDay() || 7;
+
+                const monday = new Date(januaryFourth);
+
+                monday.setDate(
+                    januaryFourth.getDate() - day + 1 +
+                    (week - 1) * 7
+                );
+
+                return monday;
+            }
+
+            daterecordinput.value = getTodayDate();
+
+            weekpicker.value = getWeekValue(new Date());
+
+
+
+            let records =
+                JSON.parse(localStorage.getItem("employeerecord")) || [];
+           
+            const taskchart = new Chart(chartcanvas, {
+
+                
+                type: "bar",
+
+                data: {
+                    labels: [],
+
+                    datasets: [{
+                        label: "Completion Percentage",
+                        data: [],
+                        backgroundColor: [],
+                        borderColor: [],
+                        borderWidth: 1
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        },
+
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                const record = context.dataset.records?.[context.dataIndex];   
+                                
+
+                                    if (!record) {
+                                        return "Completion: " + context.raw + "%";
+                                    }
+
+                                    return "Completion: " + context.raw + "% - " +
+                                        (record.status === "completed"
+                                            ? "Completed"
+                                            : "In Progress");
+                                }
+                            }
+                        }
+                    },
+
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+
+                            // Y-axis par percentage show keray k lie hai ye
+                            ticks: {
+                                stepSize: 10,
+                                callback: function(value) {
+                                    return value + "%";
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+
+            function saverecords() {
+                localStorage.setItem(
+                    "employeerecord",
+                    JSON.stringify(records)
+                );
+            }
+
+            function renderRecords() {
+                tablebody.innerHTML = "";
+
+                records.forEach((record, index) => {
+                    const row = document.createElement("tr");
+
+                    const values = [
+                        record.employeeName,
+                        record.department,
+                        record.task,
+                        record.date,
+                        record.status === "completed"
+                            ? "Completed"
+                            : "In Progress",
+                        `${record.completion}%`
+                    ];
+
+                    values.forEach(value => {
+                        const cell = document.createElement("td");
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+
+                    const actionCell = document.createElement("td");
+                    const deleteButton = document.createElement("button");
+
+                    deleteButton.type = "button";
+                    deleteButton.textContent = "Delete";
+                    deleteButton.className = "delete-btn";
+                    deleteButton.dataset.index = index;
+
+                    actionCell.appendChild(deleteButton);
+                    row.appendChild(actionCell);
+                    tablebody.appendChild(row);
+                });
+
+                updatechart();
+            }
+
+            function updatechart() {
+
+                const selectedWeek = weekpicker.value;
+
+                const filteredRecords = records.filter(record => {
+
+                    return record.date &&
+                        getWeekValue(new Date(record.date + "T12:00:00")) === selectedWeek;
+
+                });
+            taskchart.data.datasets[0].records = filteredRecords;
+
+
+
+                taskchart.data.labels = filteredRecords.map(record =>
+                    record.employeeName
+                );
+
+                taskchart.data.datasets[0].data = filteredRecords.map(record =>
+                    Number(record.completion)
+                );
+
+                taskchart.data.datasets[0].backgroundColor = filteredRecords.map(record =>
+                    record.status === "completed"
+                        ? "#5EABB6"
+                        : "#A8DDE3"
+                );
+
+    
+                taskchart.data.datasets[0].borderColor = filteredRecords.map(record =>
+                    record.status === "completed"
+                        ? "#355B66"
+                        : "#78BFC8"
+                );
+
+                taskchart.update();
+            }
+
+            addrecordbutton.addEventListener("click", () => {
+
+                const employeeName = empname.value.trim();
+                const department = departinput.value.trim();
+                const task = taskinput.value.trim();
+                const date = daterecordinput.value;
+                const status = taskstatusinput.value;
+                const completion = completioninput.value.trim();
+
+                if (!employeeName || !department || !task || !date || completion === "") {
+                    alert("Fill in all fields.");
+                    return;
+                }
+
+                const completionNumber = Number(completion)
+
+                if (completionNumber < 10 || completionNumber > 100) {
+                    alert("Completion must be between 10 and 100.");
+                    return;
+                }
+
+                records.push({
+                    employeeName,
+                    department,
+                    task,
+                    date,
+                    status,
+                    completion: completionNumber
+                });
+
+                saverecords();
+                renderRecords();
+
+                empname.value = "";
+                departinput.value = "";
+                taskinput.value = "";
+                daterecordinput.value = getTodayDate();
+                taskstatusinput.value = "in-progress";
+                completioninput.value = "";
+            });
+
+            tablebody.addEventListener("click", event => {
+                if (event.target.classList.contains("delete-btn")) {
+                    const index = Number(event.target.dataset.index);
+
+                    records.splice(index, 1);
+
+                    saverecords();
+                    renderRecords();
+                }
+            });
+
+             weekpicker.addEventListener("change", updatechart);
+
+
+            renderRecords();
+
+        });
+    </script>
+</body>
+</html>
